@@ -14,5 +14,8 @@
   "type": "module",
   "workspaces": [
     "src/tokenmania_frontend"
-  ]
+  ],
+  "devDependencies": {
+    "tailwindcss": "^3.4.14"
+  }
 }
