@@ -2,11 +2,15 @@ import React, { useState } from 'react';
 import TokenInfo from './TokenInfo';
 import { tokenmania_backend } from "../../declarations/tokenmania_backend";
 import BalanceChecker from './BalanceChecker';
+import InternetIdentity from './InternetIdentity';
 
 const Header = () => {
   return (
-    <header className="bg-infinite text-white p-6 mb-8 shadow-lg">
+    <header className="bg-infinite text-white p-6 mb-8 shadow-lg flex justify-between items-center">
       <h1 className="text-4xl font-bold tracking-tight">Tokenmania</h1>
+      <div className="flex-shrink-0">
+        <InternetIdentity />
+      </div>
     </header>
   );
 };
