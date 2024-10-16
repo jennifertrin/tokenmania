@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import TokenInfo from './TokenInfo';
 import { tokenmania_backend } from "../../declarations/tokenmania_backend";
 
 const Header = () => {
@@ -18,8 +19,8 @@ const TokenSender = () => {
   const handleSendTransaction = async (e) => {
     e.preventDefault();
     try {
-      await tokenmania_backend.Ledger?.icrc1_transfer({
-        'to': address,
+      await tokenmania_backend.icrc1_transfer({
+        'to': Principal.fromText(address),
         'fee': [],
         'memo': [],
         'from_subaccount': fromSubaccount ? [fromSubaccount] : [],
@@ -83,8 +84,8 @@ const ApproveSpender = () => {
   const handleApprove = async (e) => {
     e.preventDefault();
     try {
-      await tokenmania_backend.Ledger?.icrc2_approve({
-        spender: { owner: spenderAddress, subaccount: [] },
+      await tokenmania_backend.icrc2_approve({
+        spender: { owner: Principal.fromText(spenderAddress), subaccount: [] },
         amount: BigInt(amount),
         from_subaccount: fromSubaccount ? [fromSubaccount] : [],
         expires_at: [],
@@ -151,8 +152,8 @@ const TransferFrom = () => {
   const handleTransferFrom = async (e) => {
     e.preventDefault();
     try {
-      await tokenmania_backend.Ledger?.icrc2_transfer_from({
-        from: { owner: fromAddress, subaccount: [] },
+      await tokenmania_backend.icrc2_transfer_from({
+        from: { owner: Principal.fromText(fromAddress), subaccount: [] },
         to: { owner: toAddress, subaccount: [] },
         amount: BigInt(amount),
         spender_subaccount: spenderSubaccount ? [spenderSubaccount] : [],
@@ -220,6 +221,7 @@ const TokenManagement = () => {
   return (
     <div className="min-h-screen bg-gray-100">
       <Header />
+      <TokenInfo />
       <div className="w-full space-x-8 mx-auto px-4 flex flex-row">
         <TokenSender />
         <ApproveSpender />
