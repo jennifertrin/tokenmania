@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import TokenInfo from './TokenInfo';
 import { tokenmania_backend } from "../../declarations/tokenmania_backend";
+import BalanceChecker from './BalanceChecker';
 
 const Header = () => {
   return (
@@ -222,10 +223,13 @@ const TokenManagement = () => {
     <div className="min-h-screen bg-gray-100">
       <Header />
       <TokenInfo />
-      <div className="w-full space-x-8 mx-auto px-4 flex flex-row">
-        <TokenSender />
-        <ApproveSpender />
-        <TransferFrom />
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <BalanceChecker />
+          <TokenSender />
+          <ApproveSpender />
+          <TransferFrom />
+        </div>
       </div>
     </div>
   );
