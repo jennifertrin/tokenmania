@@ -9,7 +9,26 @@ import Int "mo:base/Int";
 import Nat8 "mo:base/Nat8";
 import Nat64 "mo:base/Nat64";
 
-actor class Ledger(init : { initial_mints : [{ account : { owner : Principal; subaccount : ?Blob }; amount : Nat }]; minting_account : { owner : Principal; subaccount : ?Blob }; token_name : Text; token_symbol : Text; decimals : Nat8; transfer_fee : Nat }) = this {
+actor class Ledger(
+  // update these initialization arguments with the preferred token metadata
+  init : {
+    initial_mints = [{
+      account = {
+        owner = Principal.fromText("aaaaa-aaa");
+        subaccount = null;
+      };
+      amount = 1_000_000_000;
+    }];
+    minting_account = {
+      owner = Principal.fromText("aaaaa-aa");
+      subaccount = null;
+    };
+    token_name = "My Token";
+    token_symbol = "MTK";
+    decimals = 8 : Nat8;
+    transfer_fee = 10_000;
+  },
+) = this {
 
   public type Account = { owner : Principal; subaccount : ?Subaccount };
   public type Subaccount = Blob;
