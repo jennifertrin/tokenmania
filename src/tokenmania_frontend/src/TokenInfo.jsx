@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { tokenmania_backend } from "../../declarations/tokenmania_backend";
 
-const TokenInfo = () => {
+const TokenInfo = ({ totalSupply }) => {
     const [tokenName, setTokenName] = useState('');
     const [tokenSymbol, setTokenSymbol] = useState('');
-    const [totalSupply, setTotalSupply] = useState('');
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchTokenInfo = async () => {
             try {
                 const metadata = await tokenmania_backend.icrc1_metadata();
-                const supply = await tokenmania_backend.icrc1_total_supply();
 
                 metadata.forEach(item => {
                     if (item[0] === "icrc1:name") {
@@ -21,7 +19,6 @@ const TokenInfo = () => {
                     }
                 });
 
-                setTotalSupply(Number(supply).toLocaleString());
                 setLoading(false);
             } catch (error) {
                 console.error("Error fetching token info:", error);
@@ -51,17 +48,5 @@ const TokenInfo = () => {
         </div>
     );
 };
-
-const InfoCard = ({ icon, title, value }) => (
-    <div className="bg-white p-4 rounded-md shadow-sm transition-all duration-300 hover:shadow-md">
-        <div className="flex items-center mb-2">
-            <span className="text-2xl mr-2">{icon}</span>
-            <h3 className="text-lg font-semibold text-gray-700">{title}</h3>
-        </div>
-        <p className="text-xl font-bold text-indigo-600 truncate" title={value}>
-            {value}
-        </p>
-    </div>
-);
 
 export default TokenInfo;

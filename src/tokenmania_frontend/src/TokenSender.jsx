@@ -3,7 +3,7 @@ import { tokenmania_backend } from "../../declarations/tokenmania_backend";
 import { Principal } from '@dfinity/principal';
 import StatusMessage from './StatusMessage';
 
-const TokenSender = () => {
+const TokenSender = ({ updateSupply }) => {
     const [address, setAddress] = useState('');
     const [fromSubaccount, setFromSubaccount] = useState('');
     const [amount, setAmount] = useState('');
@@ -25,6 +25,7 @@ const TokenSender = () => {
             });
             if ('Ok' in result) {
                 setStatus({ message: 'Transfer successful', isSuccess: true });
+                updateSupply(); // Update the total supply after successful transfer
             } else if ('Err' in result) {
                 if ('InsufficientFunds' in result.Err) {
                     setStatus({
