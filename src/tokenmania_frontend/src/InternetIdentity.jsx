@@ -1,10 +1,7 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { AuthClient } from '@dfinity/auth-client';
 
-const InternetIdentity = () => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [identity, setIdentity] = useState(null);
-
+const InternetIdentity = ({ isAuthenticated, setIsAuthenticated, identity, setIdentity }) => {
     const initAuth = useCallback(async () => {
         const authClient = await AuthClient.create();
         if (await authClient.isAuthenticated()) {
@@ -40,17 +37,10 @@ const InternetIdentity = () => {
     }, [initAuth]);
 
     return (
-        <div className="flex flex-col items-end justify-center space-y-2">
-            {!isAuthenticated ? (
-                <button
-                    onClick={signIn}
-                    className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-                >
-                    Sign In
-                </button>
-            ) : (
+        <div className="flex items-center space-x-4">
+            {isAuthenticated ? (
                 <>
-                    <p className="text-white text-sm">
+                    <p className="text-sm">
                         <span className="font-mono">{identity?.getPrincipal().toString()}</span>
                     </p>
                     <button
@@ -60,6 +50,13 @@ const InternetIdentity = () => {
                         Sign Out
                     </button>
                 </>
+            ) : (
+                <button
+                    onClick={signIn}
+                    className="bg-white text-blue-600 font-bold py-1 px-3 text-sm rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50"
+                >
+                    Sign In
+                </button>
             )}
         </div>
     );
