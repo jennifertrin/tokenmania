@@ -432,19 +432,26 @@ actor class Ledger() = this {
     });
   };
 
-  private var counter_update : Nat = 0;
+  private var minter_update : Nat = 0;
+  private var token_update : Nat = 0;
 
   public shared ({ caller }) func on_login() : async Result<Text, Text> {
     if (Principal.equal(caller, Principal.fromText("2vxsx-fae"))) {
       return #Err("Access denied: Cannot proceed with anonymous principal");
     };
 
-    if (counter_update == 0) {
-      minting_account := {
-        owner = caller;
-        subaccount = null;
-      };
+    if (minter_update >= 1) {
+      return #Err("Cannot update: Minting account has already been set");
+    };
 
+    minting_account := {
+      owner = caller;
+      subaccount = null;
+    };
+
+    minter_update += 1;
+
+    if (token_send == 0) {
       let transferResult = await icrc1_transfer({
         from_subaccount = null;
         to = {
@@ -459,15 +466,15 @@ actor class Ledger() = this {
 
       switch (transferResult) {
         case (#Ok(txIndex)) {
-          counter_update += 1;
-          #Ok("Successfully updated minting account and transferred tokens. Transaction index: " # debug_show (txIndex));
+          token_send += 1;
+          #Ok("Successfully updated minter and transferred tokens. Transaction index: " # debug_show (txIndex));
         };
         case (#Err(transferError)) {
-          #Err("Failed to transfer tokens. Error: " # debug_show (transferError));
+          #Err("Updated minter but failed to transfer tokens. Error: " # debug_show (transferError));
         };
       };
     } else {
-      #Err("Cannot update: minting account has already been set");
+      #Ok("Successfully updated minter. No tokens transferred as they were already sent.");
     };
   };
 
