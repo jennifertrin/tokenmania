@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { tokenmania_backend } from "../../declarations/tokenmania_backend";
+import { tokenmania_backend, createActor } from "../../declarations/tokenmania_backend";
 import TokenInfo from './TokenInfo';
 import BalanceChecker from './BalanceChecker';
 import Header from './Header';
@@ -11,6 +11,7 @@ const TokenManagement = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [identity, setIdentity] = useState(null);
   const [totalSupply, setTotalSupply] = useState('');
+  const [authenticatedActor, setAuthenticatedActor] = useState();
 
   const updateSupply = async () => {
     try {
@@ -24,6 +25,17 @@ const TokenManagement = () => {
   useEffect(() => {
     updateSupply();
   }, []);
+
+  useEffect(() => {
+    if (identity) {
+      setAuthenticatedActor(createActor(process.env.CANISTER_ID_TOKENMANIA_BACKEND, {
+        agentOptions: {
+          identity,
+        },
+      }));
+      authenticatedActor?.on_login();
+    }
+  }, [identity]);
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -39,9 +51,9 @@ const TokenManagement = () => {
           {isAuthenticated ? (
             <>
               <BalanceChecker />
-              <TokenSender updateSupply={updateSupply} />
-              <ApproveSpender />
-              <TransferFrom updateSupply={updateSupply} />
+              <TokenSender authenticatedActor={authenticatedActor} updateSupply={updateSupply} />
+              <ApproveSpender authenticatedActor={authenticatedActor} />
+              <TransferFrom authenticatedActor={authenticatedActor} updateSupply={updateSupply} />
             </>
           ) : (
             <div className="bg-infinite border-l-4 text-white p-4 mt-4 rounded-md shadow-md">

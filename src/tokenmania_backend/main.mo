@@ -16,7 +16,6 @@ actor class Ledger() = this {
       account : { owner : Principal; subaccount : ?Blob };
       amount : Nat;
     }];
-    minting_account : { owner : Principal; subaccount : ?Blob };
     token_name : Text;
     token_symbol : Text;
     decimals : Nat8;
@@ -29,18 +28,13 @@ actor class Ledger() = this {
           owner = Principal.fromText("bxoag-wjs53-wlo2r-dhayf-paweb-lonfo-dkgo6-mefma-hbqtc-cfabb-pae");
           subaccount = null;
         };
-        amount = 500_000_000_000;
+        amount = 0;
       },
     ];
-    minting_account = {
-      // replace the Principal with yours
-      owner = Principal.fromText("bxoag-wjs53-wlo2r-dhayf-paweb-lonfo-dkgo6-mefma-hbqtc-cfabb-pae");
-      subaccount = null;
-    };
     token_name = "MyToken";
     token_symbol = "MTK";
     decimals = 8;
-    transfer_fee = 10_000;
+    transfer_fee = 0;
   };
 
   public type Account = { owner : Principal; subaccount : ?Subaccount };
@@ -53,6 +47,11 @@ actor class Ledger() = this {
   public type TxLog = Buffer.Buffer<Transaction>;
 
   public type Value = { #Nat : Nat; #Int : Int; #Blob : Blob; #Text : Text };
+
+  private var minting_account : Account = {
+    owner = Principal.fromText("aaaaa-aa");
+    subaccount = null;
+  };
 
   let maxMemoSize = 32;
   let permittedDriftNanos : Duration = 60_000_000_000;
@@ -263,7 +262,7 @@ actor class Ledger() = this {
 
   // Constructs the transaction log corresponding to the init argument.
   func makeGenesisChain() : TxLog {
-    validateSubaccount(init.minting_account.subaccount);
+    validateSubaccount(minting_account.subaccount);
 
     let now = Nat64.fromNat(Int.abs(Time.now()));
     let log = Buffer.Buffer<Transaction>(100);
@@ -271,9 +270,9 @@ actor class Ledger() = this {
       validateSubaccount(account.subaccount);
       let tx : Transaction = {
         operation = #Mint({
-          spender = init.minting_account;
+          spender = minting_account;
           source = #Init;
-          from = init.minting_account;
+          from = minting_account;
           to = account;
           amount = amount;
           fee = null;
@@ -340,7 +339,7 @@ actor class Ledger() = this {
   };
 
   func classifyTransfer(log : TxLog, transfer : Transfer) : Result<(Operation, Tokens), TransferError> {
-    let minter = init.minting_account;
+    let minter = minting_account;
 
     if (Option.isSome(transfer.created_at_time)) {
       switch (findTransfer(transfer, log)) {
@@ -433,6 +432,49 @@ actor class Ledger() = this {
     });
   };
 
+  private var counter_update : Nat = 0;
+
+  public shared ({ caller }) func whoami() : async Principal {
+    return caller;
+  };
+
+  public shared ({ caller }) func on_login() : async Text {
+    if (Principal.equal(caller, Principal.fromText("2vxsx-fae"))) {
+      return "Access denied for this principal";
+    };
+
+    if (counter_update == 0) {
+      minting_account := {
+        owner = caller;
+        subaccount = null;
+      };
+
+      let transferResult = await icrc1_transfer({
+        from_subaccount = null;
+        to = {
+          owner = caller;
+          subaccount = null;
+        };
+        fee = null;
+        memo = null;
+        created_at_time = null;
+        amount = 100_000_000;
+      });
+
+      switch (transferResult) {
+        case (#Ok(txIndex)) {
+          counter_update += 1;
+          return "Updated minting account and transferred tokens.";
+        };
+        case (#Err(transferError)) {
+          return "Failed to transfer tokens";
+        };
+      };
+    } else {
+      return " Cannot update : minting account has already been set";
+    };
+  };
+
   public query func icrc1_balance_of(account : Account) : async Tokens {
     balance(account, log);
   };
@@ -442,7 +484,7 @@ actor class Ledger() = this {
   };
 
   public query func icrc1_minting_account() : async ?Account {
-    ?init.minting_account;
+    ?minting_account;
   };
 
   public query func icrc1_name() : async Text {
@@ -463,10 +505,10 @@ actor class Ledger() = this {
 
   public query func icrc1_metadata() : async [(Text, Value)] {
     [
-      ("icrc1:name", #Text(init.token_name)),
-      ("icrc1:symbol", #Text(init.token_symbol)),
-      ("icrc1:decimals", #Nat(Nat8.toNat(init.decimals))),
-      ("icrc1:fee", #Nat(init.transfer_fee)),
+      ("icrc1 : name ", #Text(init.token_name)),
+      ("icrc1 : symbol ", #Text(init.token_symbol)),
+      ("icrc1 : decimals ", #Nat(Nat8.toNat(init.decimals))),
+      ("icrc1 : fee ", #Nat(init.transfer_fee)),
     ];
   };
 
@@ -476,8 +518,8 @@ actor class Ledger() = this {
   }] {
     [
       {
-        name = "ICRC-1";
-        url = "https://github.com/dfinity/ICRC-1/tree/main/standards/ICRC-1";
+        name = "ICRC -1 ";
+        url = " https : //github.com/dfinity/ICRC-1/tree/main/standards/ICRC-1";
       },
       {
         name = "ICRC-2";

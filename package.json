@@ -17,5 +17,8 @@
   ],
   "devDependencies": {
     "tailwindcss": "^3.4.14"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^4.3.2"
   }
 }

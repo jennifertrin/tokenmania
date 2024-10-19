@@ -7,7 +7,7 @@ const Card = ({ icon, title, value }) => (
             <span className="text-lg font-semibold text-black tracking-tight">{title}</span>
         </div>
         <div className="text-3xl font-extrabold text-infinite tracking-wide">
-            {Object.values(value)[0]}
+            {Object.values(value)}
         </div>
     </div>
 );

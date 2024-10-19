@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { tokenmania_backend } from "../../declarations/tokenmania_backend";
 import { Principal } from '@dfinity/principal';
 import StatusMessage from './StatusMessage';
 
-const ApproveSpender = () => {
+const ApproveSpender = ({ authenticatedActor }) => {
     const [spenderAddress, setSpenderAddress] = useState('');
     const [amount, setAmount] = useState('');
     const [fromSubaccount, setFromSubaccount] = useState('');
@@ -12,7 +11,7 @@ const ApproveSpender = () => {
     const handleApprove = async (e) => {
         e.preventDefault();
         try {
-            await tokenmania_backend.icrc2_approve({
+            await authenticatedActor.icrc2_approve({
                 spender: { owner: Principal.fromText(spenderAddress), subaccount: [] },
                 amount: BigInt(amount),
                 from_subaccount: fromSubaccount ? [fromSubaccount] : [],

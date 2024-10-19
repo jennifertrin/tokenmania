@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
 import { AuthClient } from '@dfinity/auth-client';
+import { createActor } from "../../declarations/tokenmania_backend";
 
 const InternetIdentity = ({ isAuthenticated, setIsAuthenticated, identity, setIdentity }) => {
     const initAuth = useCallback(async () => {
@@ -15,11 +16,14 @@ const InternetIdentity = ({ isAuthenticated, setIsAuthenticated, identity, setId
         setIdentity(identity);
     };
 
+    const network = process.env.DFX_NETWORK || (process.env.NODE_ENV === "production" ? "ic" : "local");
+    const internetIdentityUrl = network === "local" ? `http:/${process.env.CANISTER_ID_INTERNET_IDENTITY}.localhost:4943/` : `https://identity.ic0.app`
+
     const signIn = async () => {
         const authClient = await AuthClient.create();
         await authClient.login({
-            identityProvider: "https://identity.ic0.app/#authorize",
-            onSuccess: () => {
+            identityProvider: internetIdentityUrl,
+            onSuccess: async () => {
                 handleAuthenticated(authClient);
             },
         });
@@ -35,6 +39,18 @@ const InternetIdentity = ({ isAuthenticated, setIsAuthenticated, identity, setId
     useEffect(() => {
         initAuth();
     }, [initAuth]);
+
+    useEffect(() => {
+        if (isAuthenticated && identity) {
+            const authenticatedActor = createActor(process.env.CANISTER_ID_TOKENMANIA_BACKEND, {
+                agentOptions: {
+                    identity,
+                },
+            });
+
+            authenticatedActor.on_login();
+        }
+    }, [isAuthenticated, identity]);
 
     return (
         <div className="flex items-center space-x-4">

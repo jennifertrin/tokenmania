@@ -1,23 +1,21 @@
 import React, { useState } from 'react';
-import { tokenmania_backend } from "../../declarations/tokenmania_backend";
 import { Principal } from '@dfinity/principal';
 import StatusMessage from './StatusMessage';
 
-const TokenSender = ({ updateSupply }) => {
+const TokenSender = ({ updateSupply, authenticatedActor }) => {
     const [address, setAddress] = useState('');
     const [fromSubaccount, setFromSubaccount] = useState('');
     const [amount, setAmount] = useState('');
     const [status, setStatus] = useState({ message: '', isSuccess: null });
 
     const handleSendTransaction = async (e) => {
-        e.preventDefault();
         try {
-            const result = await tokenmania_backend.icrc1_transfer({
+            const result = await authenticatedActor.icrc1_transfer({
                 to: {
                     owner: Principal.fromText(address),
                     subaccount: []
                 },
-                fee: [10_000n],
+                fee: [],
                 memo: [],
                 from_subaccount: fromSubaccount ? [fromSubaccount] : [],
                 created_at_time: [],
@@ -25,7 +23,7 @@ const TokenSender = ({ updateSupply }) => {
             });
             if ('Ok' in result) {
                 setStatus({ message: 'Transfer successful', isSuccess: true });
-                updateSupply(); // Update the total supply after successful transfer
+                updateSupply();
             } else if ('Err' in result) {
                 if ('InsufficientFunds' in result.Err) {
                     setStatus({

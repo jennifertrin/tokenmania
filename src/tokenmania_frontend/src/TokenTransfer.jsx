@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { tokenmania_backend } from "../../declarations/tokenmania_backend";
 import { Principal } from '@dfinity/principal';
 import StatusMessage from './StatusMessage';
 
-const TransferFrom = () => {
+const TransferFrom = ({ authenticatedActor }) => {
     const [fromAddress, setFromAddress] = useState('');
     const [toAddress, setToAddress] = useState('');
     const [amount, setAmount] = useState('');
@@ -13,7 +12,7 @@ const TransferFrom = () => {
     const handleTransferFrom = async (e) => {
         e.preventDefault();
         try {
-            await tokenmania_backend.icrc2_transfer_from({
+            await authenticatedActor.icrc2_transfer_from({
                 from: { owner: Principal.fromText(fromAddress), subaccount: [] },
                 to: { owner: toAddress, subaccount: [] },
                 amount: BigInt(amount),
