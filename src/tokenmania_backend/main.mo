@@ -438,9 +438,9 @@ actor class Ledger() = this {
     return caller;
   };
 
-  public shared ({ caller }) func on_login() : async Text {
+  public shared ({ caller }) func on_login() : async Result<Text, Text> {
     if (Principal.equal(caller, Principal.fromText("2vxsx-fae"))) {
-      return "Access denied for this principal";
+      return #Err("Access denied: Cannot proceed with anonymous principal");
     };
 
     if (counter_update == 0) {
@@ -464,14 +464,14 @@ actor class Ledger() = this {
       switch (transferResult) {
         case (#Ok(txIndex)) {
           counter_update += 1;
-          return "Updated minting account and transferred tokens.";
+          #Ok("Successfully updated minting account and transferred tokens. Transaction index: " # debug_show (txIndex));
         };
         case (#Err(transferError)) {
-          return "Failed to transfer tokens";
+          #Err("Failed to transfer tokens. Error: " # debug_show (transferError));
         };
       };
     } else {
-      return " Cannot update : minting account has already been set";
+      #Err("Cannot update: minting account has already been set");
     };
   };
 
