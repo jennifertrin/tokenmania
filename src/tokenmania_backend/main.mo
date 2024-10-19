@@ -434,10 +434,6 @@ actor class Ledger() = this {
 
   private var counter_update : Nat = 0;
 
-  public shared ({ caller }) func whoami() : async Principal {
-    return caller;
-  };
-
   public shared ({ caller }) func on_login() : async Result<Text, Text> {
     if (Principal.equal(caller, Principal.fromText("2vxsx-fae"))) {
       return #Err("Access denied: Cannot proceed with anonymous principal");

@@ -9,6 +9,7 @@ const TokenSender = ({ updateSupply, authenticatedActor }) => {
     const [status, setStatus] = useState({ message: '', isSuccess: null });
 
     const handleSendTransaction = async (e) => {
+        e.preventDefault();
         try {
             const result = await authenticatedActor.icrc1_transfer({
                 to: {
