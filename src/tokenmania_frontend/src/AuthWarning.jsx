@@ -1,6 +1,6 @@
 import React from 'react';
 
-const FullPageAuthWarning = () => {
+const FullPageAuthWarning = ({ showIdentity }) => {
     return (
         <div className="w-screen h-screen px-0 -my-8 bg-infinite text-white">
             <main className="flex-grow flex items-center justify-center p-4">

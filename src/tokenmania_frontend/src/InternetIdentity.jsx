@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 import { AuthClient } from '@dfinity/auth-client';
 import { createActor } from "../../declarations/tokenmania_backend";
 
-const InternetIdentity = ({ isAuthenticated, setIsAuthenticated, identity, setIdentity }) => {
+const InternetIdentity = ({ isAuthenticated, setIsAuthenticated, identity, setIdentity, showIdentity }) => {
     const initAuth = useCallback(async () => {
         const authClient = await AuthClient.create();
         if (await authClient.isAuthenticated()) {
@@ -56,15 +56,19 @@ const InternetIdentity = ({ isAuthenticated, setIsAuthenticated, identity, setId
         <div className="flex items-center space-x-4">
             {isAuthenticated ? (
                 <>
-                    <p className="text-sm">
-                        <span className="font-mono">{identity?.getPrincipal().toString()}</span>
-                    </p>
-                    <button
-                        onClick={signOut}
-                        className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 text-sm rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
-                    >
-                        Sign Out
-                    </button>
+                    {showIdentity &&
+                        <>
+                            <p className="text-sm">
+                                <span className="font-mono">{identity?.getPrincipal().toString()}</span>
+                            </p>
+                            <button
+                                onClick={signOut}
+                                className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 text-sm rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+                            >
+                                Sign Out
+                            </button>
+                        </>
+                    }
                 </>
             ) : (
                 <button

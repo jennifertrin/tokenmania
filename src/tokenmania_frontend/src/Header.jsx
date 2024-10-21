@@ -11,6 +11,7 @@ const Header = ({ isAuthenticated, identity, setIsAuthenticated, setIdentity }) 
                     setIsAuthenticated={setIsAuthenticated}
                     identity={identity}
                     setIdentity={setIdentity}
+                    showIdentity={true}
                 />
             </div>
         </header>
