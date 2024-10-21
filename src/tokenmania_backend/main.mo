@@ -433,7 +433,7 @@ actor class Ledger() = this {
   };
 
   private var minter_update : Nat = 0;
-  private var token_update : Nat = 0;
+  private var token_send : Nat = 0;
 
   public shared ({ caller }) func on_login() : async Result<Text, Text> {
     if (Principal.equal(caller, Principal.fromText("2vxsx-fae"))) {

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { tokenmania_backend, createActor } from "../../declarations/tokenmania_backend";
-import TokenInfo from './TokenInfo';
-import BalanceChecker from './BalanceChecker';
-import Header from './Header';
-import TokenSender from './TokenSender';
 import ApproveSpender from './TokenApprove';
+import AuthWarning from './AuthWarning';
+import BalanceChecker from './BalanceChecker';
+import { createActor, tokenmania_backend } from "../../declarations/tokenmania_backend";
+import Header from './Header';
 import TransferFrom from './TokenTransfer';
+import TokenInfo from './TokenInfo';
+import TokenSender from './TokenSender';
 
 const TokenManagement = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -56,15 +57,7 @@ const TokenManagement = () => {
               <TransferFrom authenticatedActor={authenticatedActor} updateSupply={updateSupply} />
             </>
           ) : (
-            <div className="bg-infinite border-l-4 text-white p-4 mt-4 rounded-md shadow-md">
-              <div className="flex items-center">
-                <span className="text-xl font-bold mr-2">!</span>
-                <p className="font-bold">Authentication Required</p>
-              </div>
-              <p className="mt-2">
-                Please sign in to access token management features.
-              </p>
-            </div>
+            <AuthWarning />
           )}
         </div>
       </div>
