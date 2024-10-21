@@ -5,7 +5,7 @@ import StatusMessage from './StatusMessage';
 const TransferFrom = ({ authenticatedActor }) => {
     const [fromAddress, setFromAddress] = useState('');
     const [toAddress, setToAddress] = useState('');
-    const [amount, setAmount] = useState('');
+    const [amount, setAmount] = useState(null);
     const [spenderSubaccount, setSpenderSubaccount] = useState('');
     const [status, setStatus] = useState({ message: '', isSuccess: null });
 
@@ -38,43 +38,30 @@ const TransferFrom = ({ authenticatedActor }) => {
         }
     };
 
+    const inputFields = [
+        { name: 'fromAddress', value: fromAddress, setter: setFromAddress, placeholder: 'From Address', type: 'text', required: true },
+        { name: 'toAddress', value: toAddress, setter: setToAddress, placeholder: 'To Address', type: 'text', required: true },
+        { name: 'amount', value: amount, setter: setAmount, placeholder: 'Amount', type: 'number', required: true, min: '0', step: '0.000001' },
+        { name: 'spenderSubaccount', value: spenderSubaccount, setter: setSpenderSubaccount, placeholder: 'Spender Subaccount (optional)', type: 'text', required: false },
+    ];
+
     return (
         <div className="bg-white p-8 rounded-lg shadow-md mb-8">
             <h2 className="text-3xl font-bold mb-6 text-gray-800">Transfer From</h2>
             <form onSubmit={handleTransferFrom} className="space-y-6">
-                <input
-                    type="text"
-                    value={fromAddress}
-                    onChange={(e) => setFromAddress(e.target.value)}
-                    placeholder="From Address"
-                    required
-                    className="w-full px-3 py-2 border rounded-md"
-                />
-                <input
-                    type="text"
-                    value={toAddress}
-                    onChange={(e) => setToAddress(e.target.value)}
-                    placeholder="To Address"
-                    required
-                    className="w-full px-3 py-2 border rounded-md"
-                />
-                <input
-                    type="number"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    placeholder="Amount"
-                    required
-                    min="0"
-                    step="0.000001"
-                    className="w-full px-3 py-2 border rounded-md"
-                />
-                <input
-                    type="text"
-                    value={spenderSubaccount}
-                    onChange={(e) => setSpenderSubaccount(e.target.value)}
-                    placeholder="Spender Subaccount (optional)"
-                    className="w-full px-3 py-2 border rounded-md"
-                />
+                {inputFields.map(({ name, value, setter, placeholder, type, required, min, step }) => (
+                    <input
+                        key={name}
+                        type={type}
+                        value={value}
+                        onChange={(e) => setter(e.target.value)}
+                        placeholder={placeholder}
+                        required={required}
+                        min={min}
+                        step={step}
+                        className="w-full px-3 py-2 border rounded-md"
+                    />
+                ))}
                 <button
                     type="submit"
                     className="w-full bg-infinite text-white py-2 px-4 rounded-md hover:bg-dark-infinite"
