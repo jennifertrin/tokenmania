@@ -47,21 +47,19 @@ const TokenManagement = () => {
         setIdentity={setIdentity}
       />
       <TokenInfo totalSupply={totalSupply} />
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-3 gap-8">
-          {isAuthenticated ? (
-            <>
-              <BalanceChecker />
-              <TokenSender authenticatedActor={authenticatedActor} updateSupply={updateSupply} />
-              <ApproveSpender authenticatedActor={authenticatedActor} />
-              <TransferFrom authenticatedActor={authenticatedActor} updateSupply={updateSupply} />
-            </>
-          ) : (
-            <AuthWarning />
-          )}
-        </div>
+      <div className="mx-auto">
+        {isAuthenticated ? (
+          <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-3 gap-8 px-4">
+            <BalanceChecker />
+            <TokenSender authenticatedActor={authenticatedActor} updateSupply={updateSupply} />
+            <ApproveSpender authenticatedActor={authenticatedActor} />
+            <TransferFrom authenticatedActor={authenticatedActor} updateSupply={updateSupply} />
+          </div>)
+          :
+          <AuthWarning />
+        }
       </div>
-    </div>
+    </div >
   );
 };
 
