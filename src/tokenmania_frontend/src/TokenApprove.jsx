@@ -37,35 +37,29 @@ const ApproveSpender = ({ authenticatedActor }) => {
         }
     };
 
+    const inputFields = [
+        { name: 'fromSubaccount', value: fromSubaccount, setter: setFromSubaccount, placeholder: 'From Subaccount (optional)', type: 'text', required: false },
+        { name: 'spenderAddress', value: spenderAddress, setter: setSpenderAddress, placeholder: 'Spender Address', type: 'text', required: true },
+        { name: 'amount', value: amount, setter: setAmount, placeholder: 'Approved Amount', type: 'number', required: true, min: '0', step: '0.000001' },
+    ];
+
     return (
         <div className="bg-white p-8 rounded-lg shadow-md mb-8">
             <h2 className="text-3xl font-bold mb-6 text-gray-800">Approve Spender</h2>
             <form onSubmit={handleApprove} className="space-y-6">
-                <input
-                    type="text"
-                    value={fromSubaccount}
-                    onChange={(e) => setFromSubaccount(e.target.value)}
-                    placeholder="From Subaccount (optional)"
-                    className="w-full px-3 py-2 border rounded-md"
-                />
-                <input
-                    type="text"
-                    value={spenderAddress}
-                    onChange={(e) => setSpenderAddress(e.target.value)}
-                    placeholder="Spender Address"
-                    required
-                    className="w-full px-3 py-2 border rounded-md"
-                />
-                <input
-                    type="number"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    placeholder="Approved Amount"
-                    required
-                    min="0"
-                    step="0.000001"
-                    className="w-full px-3 py-2 border rounded-md"
-                />
+                {inputFields.map(({ name, value, setter, placeholder, type, required, min, step }) => (
+                    <input
+                        key={name}
+                        type={type}
+                        value={value}
+                        onChange={(e) => setter(e.target.value)}
+                        placeholder={placeholder}
+                        required={required}
+                        min={min}
+                        step={step}
+                        className="w-full px-3 py-2 border rounded-md"
+                    />
+                ))}
                 <button
                     type="submit"
                     className="w-full bg-infinite text-white py-2 px-4 rounded-md hover:bg-dark-infinite"
