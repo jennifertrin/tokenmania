@@ -31,25 +31,26 @@ const BalanceChecker = () => {
         }
     };
 
+    const inputFields = [
+        { name: 'principal', value: principal, setter: setPrincipal, placeholder: 'Principal ID', type: 'text', required: true },
+        { name: 'subaccount', value: subaccount, setter: setSubaccount, placeholder: 'Subaccount (optional)', type: 'text', required: false },
+    ];
+
     return (
         <div className="bg-white p-8 rounded-lg shadow-md mb-8">
             <h2 className="text-3xl font-bold mb-6 text-gray-800">Check Balance</h2>
             <form onSubmit={handleCheckBalance} className="space-y-6">
-                <input
-                    type="text"
-                    value={principal}
-                    onChange={(e) => setPrincipal(e.target.value)}
-                    placeholder="Principal ID"
-                    required
-                    className="w-full px-3 py-2 border rounded-md"
-                />
-                <input
-                    type="text"
-                    value={subaccount}
-                    onChange={(e) => setSubaccount(e.target.value)}
-                    placeholder="Subaccount (optional)"
-                    className="w-full px-3 py-2 border rounded-md"
-                />
+                {inputFields.map(({ name, value, setter, placeholder, type, required }) => (
+                    <input
+                        key={name}
+                        type={type}
+                        value={value}
+                        onChange={(e) => setter(e.target.value)}
+                        placeholder={placeholder}
+                        required={required}
+                        className="w-full px-3 py-2 border rounded-md"
+                    />
+                ))}
                 <button
                     type="submit"
                     className="w-full bg-infinite text-white py-2 px-4 rounded-md hover:bg-dark-infinite"
