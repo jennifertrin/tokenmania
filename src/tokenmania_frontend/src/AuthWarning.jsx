@@ -24,11 +24,8 @@ const FullPageAuthWarning = () => {
                             <h2 className="text-xl font-bold">Authentication Required</h2>
                         </div>
                         <p className="mb-4">
-                            Please sign in to access token management features. Ensuring your account is secure is our top priority.
+                            Please sign in to access token management features.
                         </p>
-                        <button className="bg-white text-infinite font-bold py-2 px-4 rounded hover:bg-opacity-90 transition-colors">
-                            Sign In
-                        </button>
                     </div>
                 </div>
             </main>
